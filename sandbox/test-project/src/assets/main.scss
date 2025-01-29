@@ -1,0 +1,78 @@
+@use 'sass:color';
+$main-color: #2196F3;
+$main-dark: #555555;
+
+@mixin border {
+    border-radius: 4px;
+    border: 1px solid color.scale($color: $main-dark, $lightness: 60%);
+    outline: none;
+}
+
+@mixin border-hover {
+    &:hover, &:focus{
+        outline: 2px solid $main-color;
+        border-color: transparent;
+    }
+}
+
+
+.formGenComponent-object{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.formGenComponent-object-subObject {
+    @include border();
+}
+
+.formGenComponent-field {
+    label{
+        margin-bottom: 5px;
+        font-size: small;
+        display: block;
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+}
+.formGenComponent-string, .formGenComponent-number, .formGenComponent-enum{
+    padding: 5px 10px 5px 10px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    @include border();
+    @include border-hover();
+}
+
+.formGenComponent-array{
+    flex-direction: column;
+    display: flex;
+    gap: 10px;
+}
+
+.formGenComponent-array-item{
+    flex-direction: row;
+    display: flex;
+    gap: 10px;
+}
+
+.formGenComponent-array-removeButton, .formGenComponent-array-addButton {
+    width: 25px;
+    height: 25px;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    background-color: $main-dark;
+    color: white;
+    cursor: pointer;
+    &:hover{
+        background-color: color.scale($color: $main-dark, $lightness: 20%);
+    }
+}
+
+body{
+    background-color: #fafafa;
+    font-family:'Trebuchet MS', sans-serif;
+}
