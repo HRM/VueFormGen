@@ -1,7 +1,7 @@
 <template>
     <div class="formGenComponent-array">
         <div class="formGenComponent-array-item" v-for="(item,index) in arrayProps" :key="item.key">
-            <FormGenChild :form-plan="props.formPlan.items" :set-middleware="item.setMiddleware" :get-middleware="item.getMiddleware" />
+            <FormGenChild :form-plan="item.formPlan" />
             <button class="formGenComponent-array-removeButton" @click="shrinkArray(index)">-</button>
         </div>
         <button @click="expandArray" class="formGenComponent-array-addButton">+</button>

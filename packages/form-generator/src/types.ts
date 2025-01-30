@@ -126,18 +126,6 @@ export type FormGenChildContext = {
   errors: ValidationError;
 };
 
-export type SetMiddleware = (
-  value: any,
-  path: string[],
-  next: (val: any, path: string[]) => void
-) => void;
-
-export type GetMiddleware = (
-  path: string[],
-  next: (path: string[]) => any
-) => any;
-
-
 export type FormGenConfigContext = {
   components: FormGenComponentEntry[];
 };
