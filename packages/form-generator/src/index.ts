@@ -1,6 +1,7 @@
+import './main.scss'
 import FormGen from "./FormGen.ts";
 import FormGenChild from "./FormGenChild.ts";
-import { FormGenComponents } from "./FormGenComponents.ts";
+import { createFormGenConfig } from "./formGenConfiguration.ts";
 import { componentCollection } from "./util/componentCollection.ts";
 import { jsonSchemaToFormPlan } from "./util/jsonSchemaToFormPlan.ts";
 import { randomId } from "./util/randomId.ts";
@@ -9,4 +10,4 @@ export type * from "./types.ts"
 
 
 
-export {FormGen,FormGenChild,FormGenComponents,componentCollection,jsonSchemaToFormPlan,randomId,useArrayHandler};
+export {FormGen,FormGenChild, createFormGenConfig,componentCollection,jsonSchemaToFormPlan,randomId,useArrayHandler};

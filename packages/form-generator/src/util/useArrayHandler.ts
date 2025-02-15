@@ -1,10 +1,8 @@
-import { ref, type ModelRef } from "vue";
+import { toRaw, type ModelRef, computed } from "vue";
 import type {
   FormGenComponentProps,
   FormPlan,
 } from "../types";
-import { randomId } from "./randomId";
-
 
 function replaceWildCardWithIndexInPlan<T extends FormPlan>(formPlan: T, index: number): T {
   const indexOfFirstWildcard = formPlan.path.findIndex((p) => p === "*");
@@ -53,48 +51,31 @@ function replaceWildCardWithIndexInPlan<T extends FormPlan>(formPlan: T, index: 
  * @returns
  */
 export function useArrayHandler(
-  model: ModelRef<any[]>,
+  model: ModelRef<any[]|undefined>,
   props: FormGenComponentProps<"array">
 ) {
-  const arrayProps = ref<
-    {
-      key: string;
-      formPlan: FormPlan;
-    }[]
-  >([]);
+
   return {
     /**
      * Add a new item to the array
      */
     expandArray() {
-      arrayProps.value = arrayProps.value.concat({
-        key: randomId(15),
-        formPlan: replaceWildCardWithIndexInPlan(props.formPlan.items, arrayProps.value.length),
-      });
+      model.value = toRaw(model.value ?? []).concat([undefined]);
     },
     /**
      *
      * @param index the key or index of the item to remove
      */
-    shrinkArray(index?: number | string) {
-      if (arrayProps.value.length === 0) return;
-      if (index == undefined) {
-        index = arrayProps.value.length - 1;
+    shrinkArray(index?: number) {
+      if(model.value === undefined) return;
+      if (index === undefined) {
+        index = model.value.length - 1;
       }
-      if (typeof index === "string") {
-        index = arrayProps.value.findIndex((a) => a.key === index);
-      }
-      arrayProps.value = arrayProps.value
-        .filter((_, i) => i !== index)
-        .map((item, i) => ({
-          key: item.key,
-          formPlan: replaceWildCardWithIndexInPlan(props.formPlan.items, i),
-        }));
-      model.value = (model.value ?? []).filter((_, i) => i !== index);
+      model.value = toRaw(model.value ?? []).filter((_, i) => i !== index);
     },
     /**
-     * Props used for building the array children, it's an array of objects with a 'key' prop (for list rendering) and a 'formPlan' prop (for the FormGenChild component)
+     * Form plans used for rendering the FormGenChild components
      */
-    arrayProps,
+    childPlans: computed(()=>(model.value??[]).map((_, i) => replaceWildCardWithIndexInPlan(props.formPlan.items, i))),
   };
 }

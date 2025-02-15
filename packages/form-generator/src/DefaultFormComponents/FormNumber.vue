@@ -6,8 +6,8 @@
         />
 </template>
 <script setup lang="ts">
-import type { FormGenComponentProps, FormGenComponentValue } from '@vue-form-gen/form-generator';
 import { inject } from 'vue';
+import type { FormGenComponentProps, FormGenComponentValue } from '../types';
 const model = defineModel<FormGenComponentValue<'number'>>();
 const props = defineProps<FormGenComponentProps<'number'>>();
 const id = inject('fieldId','');

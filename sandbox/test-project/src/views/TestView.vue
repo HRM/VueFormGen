@@ -3,30 +3,38 @@
         <h2>
             Test Form
         </h2>
-        <FormGen v-model="obj" :form-plan="plan" />
+        <FormGen v-model="obj" :schema="schema" ref="form-gen"/>
+        <button @click="formGenRef?.validate()">Validate</button>
     </div>
 </template>
 <script setup lang="ts">
-import { FormGen, jsonSchemaToFormPlan } from '@vue-form-gen/form-generator';
-import { ref, toRaw, watch} from 'vue';
+import { FormGen, type FormGenRef } from '@vue-form-gen/form-generator';
+import type { JSONSchema4 } from 'json-schema';
+import { ref, toRaw, useTemplateRef, watch} from 'vue';
 
 const obj = ref({});
 watch(obj,(value)=>{
     console.log(toRaw(value));
 })
-const plan = jsonSchemaToFormPlan({
+const schema: JSONSchema4 = {
     type:'object',
     properties:{
-        test1:{type:'string'},
+        test1:{type:'string',minLength:5},
         test2:{type:'number'},
         test3:{enum:["test1","test2"]},
         test4:{type:'object', properties:{
             test1:{type:"string"},
             test2:{type:"number", maximum:0}
         }},
-        test5:{type:'array', items:{type:'string'}}
-    }
-})
+        test5:{type:'array', items:{type:'object', properties:{
+            test1:{type:"string"},
+            test2:{type:"number", minimum:0}
+        }},minItems:2},
+        test6:{type:'array', items:{type:'string'}}
+    },
+    required:['test1','test5']
+};
+const formGenRef = useTemplateRef<FormGenRef>('form-gen');
 
 </script>
 <style lang="css" scoped>

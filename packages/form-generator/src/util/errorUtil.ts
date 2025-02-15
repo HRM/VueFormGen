@@ -1,6 +1,6 @@
-import type { ValidationError } from "../types";
+import type { FormValidationErrors } from "../types";
 
-export function groupValidationErrors(errors: {path:string|string[],message:string}[]): ValidationError {
+export function groupValidationErrors(errors: {path:string|string[],message:string}[]): FormValidationErrors {
   const pathErrorMap = new Map<string, string[]>();
   errors.forEach((error) => {
     const errorPath = Array.isArray(error.path)

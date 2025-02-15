@@ -35,8 +35,10 @@
     "eslint": "^9.18.0",
     "eslint-plugin-cypress": "^4.1.0",
     "eslint-plugin-vue": "^9.32.0",
+    "i": "^0.3.7",
     "jiti": "^2.4.2",
     "jsdom": "^26.0.0",
+    "npm": "^10.9.2",
     "npm-run-all2": "^7.0.2",
     "prettier": "^3.4.2",
     "sass-embedded": "^1.83.4",
@@ -45,6 +47,7 @@
     "vite": "^6.0.11",
     "vite-plugin-vue-devtools": "^7.7.0",
     "vitest": "^3.0.2",
+    "vue-component-type-helpers": "^2.2.0",
     "vue-tsc": "^2.2.0"
   }
 }

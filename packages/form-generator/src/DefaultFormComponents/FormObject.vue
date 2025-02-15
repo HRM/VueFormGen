@@ -4,6 +4,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { FormGenChild, type FormGenComponentProps} from '@vue-form-gen/form-generator';
+import FormGenChild from '../FormGenChild';
+import type { FormGenComponentProps } from '../types';
 const props = defineProps<FormGenComponentProps<'object'>>();
 </script>

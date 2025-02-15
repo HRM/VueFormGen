@@ -1,12 +1,13 @@
-import { defineComponent, inject, h, type PropType, watch, type Ref, ref, computed, provide } from "vue";
+import { defineComponent, inject, h, type PropType } from "vue";
 import type {
   FormGenChildContext,
   FormGenComponent,
-  FormGenConfigContext,
+  FormGenConfig,
   FormPlan,
 } from "./types";
 import { firstSelectorMatching } from "./util/selectionUtil";
 import { getAtPath } from "./util/pathUtil";
+import { formGenConfigSymbol } from "./util/symbols";
 
 export default defineComponent({
   props: {
@@ -17,14 +18,16 @@ export default defineComponent({
       "formGenChildContext"
     )!;
 
-    const { components } = inject<FormGenConfigContext>(
-      "formGenConfigContext"
-    )!;
+    const formGenConfig =
+      inject<FormGenConfig>(formGenConfigSymbol);
+      if(!formGenConfig){
+        throw Error("Missing form gen configuration.")
+      }
 
-    const SelectedComponent = components[
+    const SelectedComponent = formGenConfig.components[
       firstSelectorMatching(
         props.formPlan,
-        components.map((c) => c.selector)
+        formGenConfig.components.map((c) => c.selector)
       )
     ]?.component as FormGenComponent;
 
@@ -34,7 +37,8 @@ export default defineComponent({
           modelValue: getAtPath(value, props.formPlan.path),
           formPlan: props.formPlan,
           errors: errors[props.formPlan.path.join(".")] ?? [],
-          "onUpdate:modelValue": (val:any)=>setValue(val, props.formPlan.path),
+          "onUpdate:modelValue": (val: any) =>
+            setValue(val, props.formPlan.path),
         });
     } else {
       throw new Error(

@@ -4,8 +4,8 @@
     </select>
 </template>
 <script setup lang="ts">
-import type { FormGenComponentProps, FormGenComponentValue } from '@vue-form-gen/form-generator';
 import { inject } from 'vue';
+import type { FormGenComponentProps, FormGenComponentValue } from '../types';
 const props = defineProps<FormGenComponentProps<'enum'>>();
 const model = defineModel<FormGenComponentValue<'enum'>>();
 const id = inject('fieldId','');
