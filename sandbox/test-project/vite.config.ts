@@ -11,7 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@vue-form-gen/form-generator': fileURLToPath(
+      'vue-form-gen': fileURLToPath(
         new URL('./../../packages/form-generator/src/index.ts', import.meta.url),
       ),
     },

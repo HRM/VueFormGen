@@ -1,5 +1,5 @@
 {
-  "name": "@vue-form-gen/form-generator",
+  "name": "vue-form-gen",
   "version": "0.0.0",
   "type": "module",
   "files": [

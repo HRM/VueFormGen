@@ -4,7 +4,7 @@ import "@/assets/main.scss"
 
 import App from './App.vue'
 import router from './router'
-import { createFormGenConfig } from '@vue-form-gen/form-generator'
+import { createFormGenConfig } from 'vue-form-gen'
 
 const app = createApp(App)
 

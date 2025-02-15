@@ -8,7 +8,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { FormGen, type FormGenRef } from '@vue-form-gen/form-generator';
+import { FormGen, type FormGenRef } from 'vue-form-gen';
 import type { JSONSchema4 } from 'json-schema';
 import { ref, toRaw, useTemplateRef, watch} from 'vue';
 

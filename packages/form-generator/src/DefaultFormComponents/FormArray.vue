@@ -2,9 +2,9 @@
     <div class="formGenComponent-array">
         <div class="formGenComponent-array-item" v-for="(item,index) in childPlans" :key="index">
             <FormGenChild :form-plan="item" />
-            <button class="formGenComponent-array-removeButton" @click="shrinkArray(index)">-</button>
+            <button class="formGenComponent-array-removeButton" @click="shrinkArray(index)">−</button>
         </div>
-        <button @click="expandArray" class="formGenComponent-array-addButton">+</button>
+        <button @click="expandArray" class="formGenComponent-array-addButton">＋</button>
     </div>
 </template>
 <script setup lang="ts">
