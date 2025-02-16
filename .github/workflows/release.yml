@@ -24,11 +24,11 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci --workspace=vue-form-gen"
+      - run: npm ci --workspace="vue-form-gen"
         if: steps.release.outputs.released == 'true'
-      - run: npm run build --workspace=vue-form-gen"
+      - run: npm run build --workspace="vue-form-gen"
         if: steps.release.outputs.released == 'true'
-      - run: npm publish --provenance --access public --workspace=vue-form-gen"
+      - run: npm publish --provenance --access public --workspace="vue-form-gen"
         if: steps.release.outputs.released == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
