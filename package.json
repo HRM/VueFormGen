@@ -2,7 +2,8 @@
   "name": "vue-form-gen",
   "workspaces":[
     "packages/*",
-    "sandbox/*"
+    "sandbox/*",
+    "docs"
   ],
   "version": "1.0.0",
   "scripts": {
