@@ -1,13 +1,12 @@
-import './main.scss'
-import FormGen from "./FormGen.ts";
-import FormGenChild from "./FormGenChild.ts";
-import { createFormGenConfig } from "./formGenConfiguration.ts";
-import { componentCollection } from "./util/componentCollection.ts";
-import { jsonSchemaToFormPlan } from "./util/jsonSchemaToFormPlan.ts";
-import { randomId } from "./util/randomId.ts";
-import { useArrayHandler } from "./util/useArrayHandler.ts";
-export type * from "./types.ts"
+import FormGen from "./FormGen";
+import FormGenChild from "./FormGenChild";
+import { createFormGenConfig } from "./formGenConfiguration";
+import { componentCollection } from "./util/componentCollection";
+import { jsonSchemaToFormPlan } from "./util/jsonSchemaToFormPlan";
+import { randomId } from "./util/randomId";
+import { useArrayHandler } from "./util/useArrayHandler";
+export type * from "./types"
 
 
 
-export {FormGen,FormGenChild, createFormGenConfig,componentCollection,jsonSchemaToFormPlan,randomId,useArrayHandler};
+export { FormGen, FormGenChild, createFormGenConfig, componentCollection, jsonSchemaToFormPlan, randomId, useArrayHandler };

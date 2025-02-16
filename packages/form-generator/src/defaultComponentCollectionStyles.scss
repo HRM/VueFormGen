@@ -1,6 +1,7 @@
 @use 'sass:color';
 $main-color: #2167f3;
 $main-dark: #555555;
+$danger-color: red; 
 
 @mixin border {
     border-radius: 4px;
@@ -17,7 +18,6 @@ $main-dark: #555555;
     }
 }
 
-
 .formGenComponent-object{
     display: flex;
     flex-direction: column;
@@ -31,21 +31,17 @@ $main-dark: #555555;
     @include border();
 }
 
-.formGenComponent-field {
-    label{
-        margin-bottom: 5px;
-        font-size: small;
-        display: block;
-        font-weight: bold;
-        text-transform: capitalize;
-    }
+.formGenComponent-field-label {
+    margin-bottom: 5px;
+    font-size: small;
+    display: block;
+    font-weight: bold;
+    text-transform: capitalize;
 }
 
-.formGenComponent-field.formGenComponent-field-required{
-    label::after{
-        content: '*';
-        color: red;
-    }
+.formGenComponent-field-label-required::after{
+    content: '*';
+    color: red;
 }
 
 .formGenComponent-string, .formGenComponent-number, .formGenComponent-enum{
@@ -91,6 +87,6 @@ $main-dark: #555555;
 }
 
 .formGenComponent-field-error{
-    color: red;
+    color: $danger-color;
     font-size: small;
 }

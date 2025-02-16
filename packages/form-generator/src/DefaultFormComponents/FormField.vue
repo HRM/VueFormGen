@@ -1,7 +1,9 @@
 <template>
-    <div class="formGenComponent-field" :class="{'formGenComponent-field-required':props.formPlan.props.required}">
-        <label :for="fieldFor">{{ props.formPlan.props.title }}</label>
-        <FormGenChild :form-plan="props.formPlan.child"/>
+    <div class="formGenComponent-field">
+        <label :for="fieldFor" class="formGenComponent-field-label"
+            :class="{ 'formGenComponent-field-label-required': props.formPlan.props.required }">{{
+                props.formPlan.props.title }}</label>
+        <FormGenChild :form-plan="props.formPlan.child" />
         <span class="formGenComponent-field-error" v-if="props.errors.length">{{ errors.join(" ") }}</span>
     </div>
 </template>

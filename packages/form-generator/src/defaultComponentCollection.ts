@@ -6,6 +6,7 @@ import FormEnum from "./DefaultFormComponents/FormEnum.vue";
 import FormBoolean from "./DefaultFormComponents/FormBoolean.vue";
 import FormString from "./DefaultFormComponents/FormString.vue";
 import { componentCollection } from "./util/componentCollection";
+import './defaultComponentCollectionStyles.scss'
 
 const defaultComponentCollection = componentCollection([
   { selector: ["object"], component: FormObject },
