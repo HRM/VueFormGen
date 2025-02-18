@@ -1,4 +1,4 @@
-import { defineComponent, inject, h, type PropType } from "vue";
+import { createVNode, defineComponent, inject, type PropType } from "vue";
 import type {
   FormGenChildContext,
   FormGenComponent,
@@ -33,7 +33,7 @@ export default defineComponent({
 
     if (SelectedComponent) {
       return () =>
-        h(SelectedComponent, {
+        createVNode(SelectedComponent, {
           modelValue: getAtPath(value, props.formPlan.path),
           formPlan: props.formPlan,
           errors: errors[props.formPlan.path.join(".")] ?? [],

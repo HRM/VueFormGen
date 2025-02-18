@@ -16,7 +16,7 @@ const obj = ref({});
 watch(obj,(value)=>{
     console.log(toRaw(value));
 })
-const schema: JSONSchema4 = {
+const schema: any = {
     type:'object',
     properties:{
         test1:{type:'string',minLength:5},
@@ -26,10 +26,6 @@ const schema: JSONSchema4 = {
             test1:{type:"string"},
             test2:{type:"number", maximum:0}
         }},
-        test5:{type:'array', items:{type:'object', properties:{
-            test1:{type:"string"},
-            test2:{type:"number", minimum:0}
-        }},minItems:2},
         test6:{type:'array', items:{type:'string'}}
     },
     required:['test1','test5']

@@ -1,94 +1,120 @@
-import type { JSONSchema4 } from 'json-schema';
-import type { FormPlan, FormFieldTranslator, SectionType } from '../types';
+import type { JSONSchema4 } from "json-schema";
+import type { FormPlan, FormFieldTranslator, SectionType } from "../types";
+import { convertName } from "./convertName";
 
 export function jsonSchemaToFormPlan(
   schema: JSONSchema4,
   basePath: string[] = [],
   required = false
-): FormPlan {
-  switch (schema.type) {
-    case 'object':
-      return {
-        section: 'object',
-        path: basePath,
-        props: { required },
-        children: Object.entries(schema.properties || {}).map(
-          ([key, value]) => {
-            const fieldRequired = Array.isArray(schema.required) ? schema.required.includes(key) : false;
-            return {
-              section: "field",
-              path: basePath.concat(key),
-              props: {
-                title: value.title ?? key,
-                description: value.description,
-                required: fieldRequired,
-              },
-              child: jsonSchemaToFormPlan(
-                value,
-                basePath.concat(key),
-                fieldRequired
-              ),
-            };}
-        ),
-      } as FormPlan<'object'>;
-    case 'array':
-      if (typeof schema.items == "object" && !Array.isArray(schema.items)){
-        return {
-          section: "array",
-          path: basePath,
-          props: {
-            minItems: schema.minItems,
-            maxItems: schema.maxItems,
-            required,
-          },
-          items: jsonSchemaToFormPlan(
+): FormPlan | undefined {
+  if (typeof schema === "object" || schema !== null) {
+    switch (schema.type) {
+      case "object":
+        const children = Object.entries(
+          typeof schema.properties === "object" && schema.properties !== null
+            ? schema.properties
+            : {}
+        )
+          .map(([key, value]) => {
+            const fieldRequired = Array.isArray(schema.required)
+              ? schema.required.includes(key)
+              : false;
+            const childPlan = jsonSchemaToFormPlan(
+              value,
+              basePath.concat(key),
+              fieldRequired
+            );
+            if (childPlan) {
+              return {
+                section: "field",
+                path: basePath.concat(key),
+                props: {
+                  title: value.title ?? convertName(key),
+                  description: value.description,
+                  required: fieldRequired,
+                },
+                child: childPlan,
+              };
+            }
+            return undefined;
+          })
+          .filter((child) => child !== undefined);
+        if (children.length > 0) {
+          return {
+            section: "object",
+            path: basePath,
+            props: { required },
+            children,
+          } as FormPlan<"object">;
+        }
+        return undefined;
+      case "array":
+        if (typeof schema.items == "object" && !Array.isArray(schema.items)) {
+          const itemsPlan = jsonSchemaToFormPlan(
             schema.items,
             basePath.concat("*")
-          ) as FormPlan<Exclude<SectionType,'field'>>,
-        };
-      }
-      throw new Error("Array schema with tuple items not supported");
-    case 'string':
-      return {
-        section: 'string',
-        path: basePath,
-        props: {
-          maxLength: schema.maxLength,
-          minLength: schema.minLength,
-          pattern: schema.pattern,
-          required,
-        },
-      } as FormPlan<'string'>;
-    case 'number':
-      return {
-        section: 'number',
-        path: basePath,
-        props: {
-          maximum: schema.maximum,
-          minimum: schema.minimum,
-          multipleOf: schema.multipleOf,
-          required,
-        },
-      } as FormPlan<'number'>;
-    case 'boolean':
-      return {
-        section: 'boolean',
-        path: basePath,
-        props: { required },
-      } as FormPlan<'boolean'>;
-    default:
-      if ('enum' in schema) {
+          );
+          if (itemsPlan) {
+            return {
+              section: "array",
+              path: basePath,
+              props: {
+                minItems: schema.minItems,
+                maxItems: schema.maxItems,
+                required,
+              },
+              items: itemsPlan as FormPlan<Exclude<SectionType, "field">>,
+            };
+          }
+        }
+        return undefined;
+      case "string":
         return {
-          section: 'enum',
+          section: "string",
           path: basePath,
           props: {
-            values: schema.enum,
+            maxLength: schema.maxLength,
+            minLength: schema.minLength,
+            pattern: schema.pattern,
             required,
           },
-        } as FormPlan<'enum'>;
-      }
-      throw new Error(`Unparsable schema: ${JSON.stringify(schema, null, 2)}`);
+        } as FormPlan<"string">;
+      case "number":
+        return {
+          section: "number",
+          path: basePath,
+          props: {
+            maximum: schema.maximum,
+            minimum: schema.minimum,
+            multipleOf: schema.multipleOf,
+            required,
+          },
+        } as FormPlan<"number">;
+      case "boolean":
+        return {
+          section: "boolean",
+          path: basePath,
+          props: { required },
+        } as FormPlan<"boolean">;
+      default:
+        if (
+          "enum" in schema &&
+          Array.isArray(schema.enum) &&
+          schema.enum.every((v) => ["number", "string"].includes(typeof v))
+        ) {
+          return {
+            section: "enum",
+            path: basePath,
+            props: {
+              values: schema.enum,
+              required,
+            },
+          } as FormPlan<"enum">;
+        }
+        return undefined;
+    }
   }
+  return undefined;
 }
 
 export function translateFormPlan<T extends FormPlan>(
@@ -96,20 +122,20 @@ export function translateFormPlan<T extends FormPlan>(
   translator: FormFieldTranslator
 ): T {
   switch (plan.section) {
-    case 'object':
+    case "object":
       return {
         ...plan,
         children: plan.children.map((child) =>
           translateFormPlan(child, translator)
         ),
       };
-    case 'field':
+    case "field":
       return {
         ...plan,
-        props: {...plan.props, title: translator(plan)},
+        props: { ...plan.props, title: translator(plan) },
         child: translateFormPlan(plan.child, translator),
       };
-    case 'array':
+    case "array":
       return {
         ...plan,
         items: translateFormPlan(plan.items, translator),

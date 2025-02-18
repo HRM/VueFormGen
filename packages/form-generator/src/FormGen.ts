@@ -1,16 +1,15 @@
-import { computed, defineComponent,h, inject, provide, reactive, watch, type PropType } from "vue";
+import { computed, createVNode, defineComponent, inject, provide, reactive, watch, type PropType } from "vue";
 import type { FormGenChildContext, FormFieldTranslator, FormValidationErrors, ValidationErrorTranslator, FormGenConfig } from "./types";
 import FormGenChild from "./FormGenChild";
 import { setAtPathByFormPlan } from "./util/pathUtil";
 import { deepAssign, deepClone } from "./util/valueUtil";
-import type { JSONSchema4 } from "json-schema";
 import { jsonSchemaToFormPlan, translateFormPlan } from "./util/jsonSchemaToFormPlan";
 import { validateFormValue } from "./util/validateFormValue";
 import { formGenConfigSymbol } from "./util/symbols";
 
 const component = defineComponent({
   props: {
-    schema: { type: Object as PropType<JSONSchema4>, required: true },
+    schema: { type: [Object,String], required: true },
     modelValue: Object,
     errorTranslator: Function as PropType<ValidationErrorTranslator>,
     fieldTranslator: Function as PropType<FormFieldTranslator>
@@ -26,25 +25,37 @@ const component = defineComponent({
       if(!formGenConfig){
         throw Error("Missing form gen configuration.")
       }
-
+    const schemaObject = computed(() => {
+      if (typeof props.schema === "string") {
+        try{
+          return JSON.parse(props.schema);
+        }catch(e){
+          return {};
+        }
+      } else {
+        return props.schema;
+      }
+    });
     const formValue = reactive(deepClone(props.modelValue ?? {}));
     const errors = reactive<FormValidationErrors>({});
     const plan = computed(() => {
-      let plan = jsonSchemaToFormPlan(props.schema)
-      if(props.fieldTranslator||formGenConfig.fieldTranslator){
+      let plan = jsonSchemaToFormPlan(schemaObject.value)
+      if((props.fieldTranslator||formGenConfig.fieldTranslator)&&plan){
         plan = translateFormPlan(plan, (props.fieldTranslator??formGenConfig.fieldTranslator)!)
       }
       return plan;
     });
 
     function validate(): boolean {
-      const res = validateFormValue(formValue, props.schema, props.errorTranslator??formGenConfig?.errorTranslator);
+      const res = validateFormValue(formValue, schemaObject.value, props.errorTranslator??formGenConfig?.errorTranslator);
       deepAssign(errors, res.errors);
       return res.valid;
     }
     
     function setValue(val: any, path: string[]) {
+      if(plan.value){
         setAtPathByFormPlan(formValue, plan.value, path, val);
+      }
         delete errors[path.join(".")];
     }
 
@@ -69,12 +80,10 @@ const component = defineComponent({
       value: formValue,
       setValue
     });
-
-    if (plan.value.section !== "object") {
-      throw Error("The root of form plan should be an object");
-    }
-
-    return () => h(FormGenChild, { formPlan: plan.value });
+    watch(plan, (value) => {
+      console.log(value)
+    },{immediate:true});
+    return () => plan?.value?.section === "object"?createVNode(FormGenChild, { formPlan: plan.value }):null;
   },
 });
 

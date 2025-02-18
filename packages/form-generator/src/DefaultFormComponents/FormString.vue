@@ -5,8 +5,5 @@
 import { inject, onUpdated } from 'vue';
 import type { FormGenComponentValue } from '../types';
 const model = defineModel<FormGenComponentValue<'string'>>()
-onUpdated(()=>{
-    console.log("updated",model.value);
-})
 const id = inject('fieldId','');
 </script>

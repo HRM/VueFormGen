@@ -28,7 +28,7 @@ export type SectionSpecificProps = {
     multipleOf?: number;
   };
   enum: {
-    values: string[];
+    values: (string | number)[];
   };
   field: {
     title: string;
@@ -47,9 +47,9 @@ export type SectionSpecificChild = {
 };
 
 export type SectionProps = {
-  [key in SectionType]: key extends keyof SectionSpecificProps ?
-    SharedProps & SectionSpecificProps[key]
-  : SharedProps;
+  [key in SectionType]: key extends keyof SectionSpecificProps
+    ? SharedProps & SectionSpecificProps[key]
+    : SharedProps;
 };
 
 export type FormPlan<K extends SectionType = SectionType> = {
@@ -57,8 +57,9 @@ export type FormPlan<K extends SectionType = SectionType> = {
     section: key;
     path: string[];
     props: SectionProps[key];
-  } & (key extends keyof SectionSpecificChild ? SectionSpecificChild[key]
-  : object);
+  } & (key extends keyof SectionSpecificChild
+    ? SectionSpecificChild[key]
+    : object);
 }[K];
 
 export type FormPlanSelector<K extends SectionType = SectionType> = {
@@ -68,7 +69,7 @@ export type FormPlanSelector<K extends SectionType = SectionType> = {
 export type FormGenComponentValue<T extends SectionType = SectionType> =
   Partial<{
     object: object;
-    enum: string;
+    enum: string | number;
     string: string;
     number: number;
     boolean: boolean;
@@ -100,12 +101,12 @@ export type FormGenComponent<T extends SectionType = SectionType> = Component<
 >;
 
 export type FormGenComponentEntry<T extends SectionType = SectionType> =
-  T extends string ?
-    {
-      selector: FormPlanSelector<T>;
-      component: FormGenComponent<T>;
-    }
-  : never;
+  T extends string
+    ? {
+        selector: FormPlanSelector<T>;
+        component: FormGenComponent<T>;
+      }
+    : never;
 
 export type FormValidationErrors = {
   [k: string]: string[];
@@ -116,7 +117,7 @@ export type ComponentCollectionConfig<T extends SectionType[]> = {
 };
 
 export type ValidationErrorTranslator = (error: ValidationError) => string;
-export type FormFieldTranslator = (formPlan: FormPlan<'field'>) => string;
+export type FormFieldTranslator = (formPlan: FormPlan<"field">) => string;
 
 export type FormGenChildContext = {
   setValue: (val: any, path: string[]) => void;
@@ -126,8 +127,8 @@ export type FormGenChildContext = {
 
 export type FormGenConfig = {
   components: FormGenComponentEntry[];
-  fieldTranslator?:FormFieldTranslator;
-  errorTranslator?:ValidationErrorTranslator;
+  fieldTranslator?: FormFieldTranslator;
+  errorTranslator?: ValidationErrorTranslator;
 };
 
 export type FormGenRef = {
