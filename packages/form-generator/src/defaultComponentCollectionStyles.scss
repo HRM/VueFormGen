@@ -1,91 +1,169 @@
-@use 'sass:color';
+@use "sass:color";
+
 $main-color: #2167f3;
-$main-dark: #555555;
-$danger-color: red; 
+$border-color: #cccccc;
+$text-color: #333;
+$danger-color: red;
+$required-star-color: red;
+$input-background-color: white;
+$button-icon-color: white;
+$border-radius: 4px;
+
+:root {
+  --form-gen-border-color: #{$border-color};
+  --form-gen-required-star-color: #{$required-star-color};
+  --form-gen-input-background-color: #{$input-background-color};
+  --form-gen-input-text-color: #{$text-color};
+  --form-gen-input-outline-color: #{color.scale($main-color, $lightness: 20%)};
+  --form-gen-solid-background-color: #{$main-color};
+  --form-gen-solid-hover-background-color: #{color.scale(
+      $main-color,
+      $lightness: 20%
+    )};
+  --form-gen-solid-text-color: #{$button-icon-color};
+  --form-gen-field-label-text-color: #{$text-color};
+  --form-gen-field-error-text-color: #{$danger-color};
+  --form-gen-field-description-text-color: #{color.scale(
+      $text-color,
+      $lightness: 20%
+    )};
+  --form-gen-boder-radius: #{$border-radius};
+}
 
 @mixin border {
-    border-radius: 4px;
-    border: 1px solid color.scale($color: $main-dark, $lightness: 60%);
-    outline: 2px solid transparent;
-    outline-offset: 0;
-    transition: outline 100ms linear;
+  border-radius: var(--form-gen-boder-radius);
+  border: 1px solid var(--form-gen-border-color);
+  outline: 2px solid transparent;
+  outline-offset: 0;
+  transition: outline 100ms linear;
 }
 
-@mixin border-hover {
-    &:hover, &:focus{
-        outline: 2px solid $main-color;
-        border-color: transparent;
-    }
+@mixin hover-outline {
+  &:hover,
+  &:focus {
+    outline: 2px solid var(--form-gen-input-outline-color);
+    border-color: transparent;
+  }
 }
 
-.formGenComponent-object{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
+.formGenComponent-object {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .formGenComponent-object-subObject {
-    @include border();
+  @include border();
 }
 
 .formGenComponent-field-label {
-    margin-bottom: 5px;
-    font-size: small;
-    display: block;
-    font-weight: bold;
+  margin-bottom: 5px;
+  font-size: small;
+  display: block;
+  font-weight: bold;
+  color: var(--form-gen-field-label-text-color);
 }
 
-.formGenComponent-field-label-required::after{
-    content: '*';
-    color: red;
+.formGenComponent-field-boolean-label-row{
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  .formGenComponent-field-label{
+    margin-bottom: 0;
+  }
 }
 
-.formGenComponent-string, .formGenComponent-number, .formGenComponent-enum{
-    appearance: none;
-    padding: 6px 10px 6px 10px;
-    font-size: small;
-    height: 30px;
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    @include border();
-    @include border-hover();
+.formGenComponent-field-label-required::after {
+  content: "*";
+  color: var(--form-gen-required-star-color);
 }
 
-.formGenComponent-array{
-    flex-direction: column;
-    display: flex;
-    gap: 10px;
+.formGenComponent-string,
+.formGenComponent-number,
+.formGenComponent-enum {
+  appearance: none;
+  padding: 6px 10px 6px 10px;
+  font-size: small;
+  height: 30px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--form-gen-input-background-color);
+  color: var(--form-gen-input-text-color);
+  @include border();
+  @include hover-outline();
 }
 
-.formGenComponent-array-item{
-    flex-direction: row;
-    display: flex;
-    gap: 10px;
+.formGenComponent-boolean {
+  appearance: none;
+  background-color: var(--form-gen-input-background-color);
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  @include border();
+  @include hover-outline();
 }
 
-.formGenComponent-array-removeButton, .formGenComponent-array-addButton {
-    display: block;
-    flex-shrink: 0;
-    width: 30px;
-    height: 30px;
-    font-size: 15px;
-    font-weight: bold;
-    padding: 0;
+.formGenComponent-boolean:checked{
+    background-color: var(--form-gen-solid-background-color);
+    color: var(--form-gen-solid-text-color);
     border: none;
-    border-radius: 4px;
-    background-color: $main-color;
-    color: white;
-    cursor: pointer;
-    &:hover{
-        background-color: color.scale($color: $main-color, $lightness: 20%);
-    }
 }
 
-.formGenComponent-field-error{
-    color: $danger-color;
-    font-size: small;
+.formGenComponent-boolean:checked::after {
+    content: "✓";
+}
+
+.formGenComponent-array {
+  flex-direction: column;
+  display: flex;
+  gap: 10px;
+}
+
+.formGenComponent-array-item {
+  flex-direction: row;
+  display: flex;
+  gap: 10px;
+}
+
+.formGenComponent-array-removeButton,
+.formGenComponent-array-addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 0;
+  border: none;
+  border-radius: var(--form-gen-boder-radius);
+  background-color: var(--form-gen-solid-background-color);
+  color: var(--form-gen-solid-text-color);
+  cursor: pointer;
+  &:hover {
+    background-color: var(--form-gen-solid-hover-background-color);
+  }
+}
+
+.formGenComponent-field-error {
+  margin-top: 3px;
+  color: var(--form-gen-field-error-text-color);
+  font-size: small;
+}
+
+.formGenComponent-field-description {
+  color: var(--form-gen-field-description-text-color);
+  margin-top: 3px;
+  font-size: small;
 }

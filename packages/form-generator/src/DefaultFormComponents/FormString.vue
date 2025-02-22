@@ -1,9 +1,38 @@
 <template>
-    <input :id="id" type="text" v-model="model" class="formGenComponent-string" />
+  <input
+    :id="id"
+    :type="inputType"
+    v-model="model"
+    :minlength="prop.formPlan.props.minLength"
+    :maxlength="prop.formPlan.props.maxLength"
+    :pattern="prop.formPlan.props.pattern"
+    class="formGenComponent-string"
+  />
 </template>
 <script setup lang="ts">
-import { inject, onUpdated } from 'vue';
-import type { FormGenComponentValue } from '../types';
-const model = defineModel<FormGenComponentValue<'string'>>()
-const id = inject('fieldId','');
+import { computed, inject, type InputTypeHTMLAttribute, type Ref } from "vue";
+import type { FormGenComponentProps, FormGenComponentValue } from "../types";
+const model = defineModel<FormGenComponentValue<"string">>();
+const prop = defineProps<FormGenComponentProps<"string">>();
+const id = inject("fieldId", "");
+const inputType: Ref<InputTypeHTMLAttribute> = computed(() => {
+  switch (prop.formPlan.props.format) {
+    case "email":
+      return "email";
+    case "password":
+      return "password";
+    case "tel":
+      return "tel";
+    case "uri":
+      return "url";
+    case "date":
+      return "date";
+    case "time":
+      return "time";
+    case "date-time":
+      return "datetime-local";
+    default:
+      return "text";
+  }
+});
 </script>

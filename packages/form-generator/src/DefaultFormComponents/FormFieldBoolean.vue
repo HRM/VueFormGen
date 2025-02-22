@@ -1,5 +1,7 @@
 <template>
   <div class="formGenComponent-field">
+    <div class="formGenComponent-field-boolean-label-row">
+    <FormGenChild :form-plan="props.formPlan.child" />
     <label
       :for="fieldFor"
       class="formGenComponent-field-label"
@@ -8,7 +10,7 @@
       }"
       >{{ props.formPlan.props.title }}</label
     >
-    <FormGenChild :form-plan="props.formPlan.child" />
+  </div>
     <div class="formGenComponent-field-error" v-if="props.errors.length">
       {{ errors.join(" ") }}
     </div>

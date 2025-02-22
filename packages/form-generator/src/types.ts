@@ -62,6 +62,8 @@ export type FormPlan<K extends SectionType = SectionType> = {
     : object);
 }[K];
 
+const k:FormPlan = {} as any;
+
 export type FormPlanSelector<K extends SectionType = SectionType> = {
   [key in SectionType]: [key] | [key, (formPlan: FormPlan<key>) => boolean];
 }[K];

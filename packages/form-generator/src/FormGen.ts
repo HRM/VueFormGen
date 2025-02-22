@@ -80,9 +80,6 @@ const component = defineComponent({
       value: formValue,
       setValue
     });
-    watch(plan, (value) => {
-      console.log(value)
-    },{immediate:true});
     return () => plan?.value?.section === "object"?createVNode(FormGenChild, { formPlan: plan.value }):null;
   },
 });

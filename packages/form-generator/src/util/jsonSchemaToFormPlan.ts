@@ -76,6 +76,7 @@ export function jsonSchemaToFormPlan(
             maxLength: schema.maxLength,
             minLength: schema.minLength,
             pattern: schema.pattern,
+            format: schema.format,
             required,
           },
         } as FormPlan<"string">;

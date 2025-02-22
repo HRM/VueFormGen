@@ -9,7 +9,7 @@ export function isNullish(value: any) {
   if(typeof value === "object" && value !== null && Object.getOwnPropertyNames(value).length === 0) {
     return true;
   }
-  if(typeof value === undefined|| value === null) {
+  if(value === undefined|| value === null) {
     return true;
   }
   return false;
