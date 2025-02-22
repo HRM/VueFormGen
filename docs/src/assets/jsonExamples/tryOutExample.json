@@ -1,0 +1,18 @@
+{  
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "age": { "type": "number" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "itemName": { "type": "string" },
+          "itemPrice": { "type": "number" }
+        }
+      }
+    }
+  },
+  "required": ["name", "age"]
+}

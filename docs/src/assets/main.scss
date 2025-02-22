@@ -1,0 +1,91 @@
+:root {
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 2rem;
+  --space-4: 4em;
+
+  --border-radius: 0.3rem;
+
+  --background-color: #f0f0f0;
+  --sheet-background-color: #f7f7f7;
+  --text-color: #333333;
+  --text-highlight-color: #3a8bff;
+  --code-background-color: #282c34;
+  --code-text-color: rgb(171, 178, 191);
+
+  --font: 'Open Sans Variable', sans-serif;
+  --font-code: 'Fira Code Variable', monospace;
+  --code-font-size: 14px;
+  --font-size: 16px;
+
+  --display-scroll-color: #b5b5b5;
+  --display-scroll-hover-color: #7a7979;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --space-1: 0.5rem;
+    --space-2: 1rem;
+    --space-3: 2rem;
+    --space-4: 4em;
+
+    --border-radius: 0.3rem;
+
+    --background-color: #1e1e1e;
+    --sheet-background-color: #2e2e2e;
+    --text-color: #f0f0f0;
+    --text-highlight-color: #71acff;
+    --code-background-color: #282c34;
+    --code-text-color: rgb(171, 178, 191);
+
+    --font: 'Open Sans Variable', sans-serif;
+    --font-code: 'Fira Code Variable', monospace;
+    --code-font-size: 14px;
+    --font-size: 16px;
+
+    --display-scroll-color: #5a5a5a;
+    --display-scroll-hover-color: #a5a5a5;
+
+    --form-gen-border-color: #444444;
+    --form-gen-required-star-color: #ff4d4d;
+    --form-gen-input-background-color: #333333;
+    --form-gen-input-text-color: #f0f0f0;
+    --form-gen-input-outline-color: #3a8bff;
+    --form-gen-solid-background-color: #2167f3;
+    --form-gen-solid-hover-background-color: #3a8bff;
+    --form-gen-solid-text-color: #ffffff;
+    --form-gen-field-label-text-color: #f0f0f0;
+    --form-gen-field-error-text-color: #ff4d4d;
+    --form-gen-field-description-text-color: #cccccc;
+    --form-gen-boder-radius: 4px;
+  }
+}
+
+body {
+  font-family: var(--font);
+  font-size: var(--font-size);
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+code{
+  font-family: var(--font-code);
+  font-size: var(--code-font-size);
+}
+
+a {
+  color: var(--text-highlight-color);
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  margin-bottom: var(--space-1);
+}

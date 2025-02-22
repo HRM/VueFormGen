@@ -12,4 +12,4 @@ npm install vue-form-gen
 
 ## Documentation
 
-Comprehensive documentation for VueFormGen is available on our **[official documentation webpage](#)**.
+Comprehensive documentation for VueFormGen is available on our **[official documentation webpage](https://hrm.github.io/VueFormGen/)**.

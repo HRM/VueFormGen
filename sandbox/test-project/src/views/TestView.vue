@@ -9,7 +9,6 @@
 </template>
 <script setup lang="ts">
 import { FormGen, type FormGenRef } from 'vue-form-gen';
-import type { JSONSchema4 } from 'json-schema';
 import { ref, toRaw, useTemplateRef, watch} from 'vue';
 
 const obj = ref({});
@@ -19,14 +18,15 @@ watch(obj,(value)=>{
 const schema: any = {
     type:'object',
     properties:{
-        test1:{type:'string',minLength:5},
+        test1:{type:'string',minLength:5,description:"some description"},
         test2:{type:'number'},
         test3:{enum:["test1","test2"]},
         test4:{type:'object', properties:{
             test1:{type:"string"},
-            test2:{type:"number", maximum:0}
+            test2:{type:"number", maximum:0},
+            test7:{type:'boolean'},
         }},
-        test6:{type:'array', items:{type:'string'}}
+        test6:{type:'array', items:{type:'string'}},
     },
     required:['test1','test5']
 };
