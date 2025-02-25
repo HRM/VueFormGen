@@ -9,8 +9,10 @@ export const highlighter = createHighlighterCoreSync({
     themeOneDarkPro
   ],
   langs: [
-    langVue,
-    langTs
+    langTs,
+    langVue
   ],
-  engine: createJavaScriptRegexEngine()
+  engine: createJavaScriptRegexEngine({
+    target: 'ES2018'
+  })
 })

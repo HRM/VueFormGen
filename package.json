@@ -7,7 +7,7 @@
   ],
   "version": "1.0.0",
   "scripts": {
-    "deploy-docs": "git subtree push --prefix dist origin gh-pages"
+    "deploy-docs": "git subtree push --prefix docs/dist origin gh-pages"
   },
   "author": "",
   "license": "ISC",
