@@ -63,7 +63,14 @@ export function jsonSchemaToFormPlan(
                 maxItems: schema.maxItems,
                 required,
               },
-              items: itemsPlan as FormPlan<Exclude<SectionType, "field">>,
+              items: {
+                section: "field",
+                path:itemsPlan.path,
+                props:{
+                  required:itemsPlan.props.required
+                },
+                child: itemsPlan as FormPlan<Exclude<SectionType, "field">>
+              },
             };
           }
         }
@@ -118,30 +125,3 @@ export function jsonSchemaToFormPlan(
   return undefined;
 }
 
-export function translateFormPlan<T extends FormPlan>(
-  plan: T,
-  translator: FormFieldTranslator
-): T {
-  switch (plan.section) {
-    case "object":
-      return {
-        ...plan,
-        children: plan.children.map((child) =>
-          translateFormPlan(child, translator)
-        ),
-      };
-    case "field":
-      return {
-        ...plan,
-        props: { ...plan.props, title: translator(plan) },
-        child: translateFormPlan(plan.child, translator),
-      };
-    case "array":
-      return {
-        ...plan,
-        items: translateFormPlan(plan.items, translator),
-      };
-    default:
-      return plan;
-  }
-}

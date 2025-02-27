@@ -8,10 +8,10 @@
     </div>
 </template>
 <script setup lang="ts">
-import { FormGen, type FormGenRef } from 'vue-form-gen';
+import { FormGen } from 'vue-form-gen';
 import { ref, toRaw, useTemplateRef, watch} from 'vue';
 
-const obj = ref({});
+const obj = ref({test1: "test", test6:[{test1:"test",test2:0,test7:true}]});
 watch(obj,(value)=>{
     console.log(toRaw(value));
 })
@@ -24,13 +24,17 @@ const schema: any = {
         test4:{type:'object', properties:{
             test1:{type:"string"},
             test2:{type:"number", maximum:0},
-            test7:{type:'boolean'},
+            // test7:{type:'boolean'},
         }},
-        test6:{type:'array', items:{type:'string'}},
+        test6:{type:'array', items:{type:'object', properties:{
+            test1:{type:"string"},
+            test2:{type:"number", maximum:0},
+            test7:{type:'boolean'},
+        }}},
     },
-    required:['test1','test5']
+    required:['test1',"test6",'test4'],
 };
-const formGenRef = useTemplateRef<FormGenRef>('form-gen');
+const formGenRef = useTemplateRef('form-gen');
 
 </script>
 <style lang="css" scoped>

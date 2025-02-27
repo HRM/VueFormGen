@@ -31,7 +31,7 @@ export type SectionSpecificProps = {
     values: (string | number)[];
   };
   field: {
-    title: string;
+    title?: string;
     description?: string;
   };
   array: {
@@ -43,7 +43,7 @@ export type SectionSpecificProps = {
 export type SectionSpecificChild = {
   object: { children: FormPlan<"field">[] };
   field: { child: FormPlan<Exclude<SectionType, "field">> };
-  array: { items: FormPlan<Exclude<SectionType, "field">> };
+  array: { items: FormPlan<"field"> };
 };
 
 export type SectionProps = {
@@ -131,8 +131,4 @@ export type FormGenConfig = {
   components: FormGenComponentEntry[];
   fieldTranslator?: FormFieldTranslator;
   errorTranslator?: ValidationErrorTranslator;
-};
-
-export type FormGenRef = {
-  validate: () => boolean;
 };

@@ -4,7 +4,7 @@ type ObjectFormPlan = {
   props: {
     required: boolean
   }
-  children: Extract<FormPlan, { section: 'field' }>[]
+  children: FieldFormPlan[]
 }
 
 type FieldFormPlan = {
@@ -26,7 +26,7 @@ type ArrayFormPlan = {
     minItems?: number
     maxItems?: number
   }
-  items: Exclude<FormPlan, { section: 'field' }>
+  items: FieldFormPlan
 }
 
 type EnumFormPlan = {

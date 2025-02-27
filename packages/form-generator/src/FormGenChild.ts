@@ -2,20 +2,17 @@ import { computed, createVNode, defineComponent, inject, watchEffect, type PropT
 import type { FormGenChildContext, FormGenComponent, FormGenConfig, FormPlan } from './types'
 import { firstSelectorMatching } from './util/selectionUtil'
 import { getAtPath } from './util/pathUtil'
-import { formGenConfigSymbol } from './util/symbols'
-import { isNullish } from './util/valueUtil'
+import { formGenConfigSymbol, formGenContextSymbol } from './util/symbols'
+import { correctBaseShape } from './util/valueUtil'
 
 export default defineComponent({
   props: {
     formPlan: { type: Object as PropType<FormPlan>, required: true },
   },
   setup(props) {
-    const { value, errors, setValue } = inject<FormGenChildContext>('formGenChildContext')!
+    const { value, errors, setValue } = inject<FormGenChildContext>(formGenContextSymbol)!
 
-    const formGenConfig = inject<FormGenConfig>(formGenConfigSymbol)
-    if (!formGenConfig) {
-      throw Error('Missing form gen configuration.')
-    }
+    const formGenConfig = inject<FormGenConfig>(formGenConfigSymbol)!
 
     const SelectedComponent = computed(
       () =>
@@ -27,23 +24,24 @@ export default defineComponent({
         ]?.component as FormGenComponent,
     )
 
-    watchEffect(() => {
-      if (
-        props.formPlan.section === 'boolean' &&
-        props.formPlan.props.required &&
-        isNullish(getAtPath(value, props.formPlan.path))
-      ) {
-        setValue(false, props.formPlan.path)
+    const plan = computed(() => {
+      if (props.formPlan.section === 'field' && formGenConfig.fieldTranslator) {
+        return formGenConfig.fieldTranslator(props.formPlan)
       }
+      return props.formPlan
+    })
+
+    const valueSetter = computed(() => (val: any) => {
+      setValue(correctBaseShape(val, props.formPlan), props.formPlan.path)
     })
 
     return () =>
       SelectedComponent.value
         ? createVNode(SelectedComponent.value, {
             modelValue: getAtPath(value, props.formPlan.path),
-            formPlan: props.formPlan,
+            formPlan: plan.value,
             errors: errors[props.formPlan.path.join('.')] ?? [],
-            'onUpdate:modelValue': (val: any) => setValue(val, props.formPlan.path),
+            'onUpdate:modelValue': valueSetter.value,
           })
         : createVNode(
             'div',

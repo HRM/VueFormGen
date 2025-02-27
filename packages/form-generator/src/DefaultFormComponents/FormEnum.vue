@@ -2,7 +2,7 @@
   <select :id="id" v-model="model" class="formGenComponent-enum">
     <option
       v-if="!props.formPlan.props.required"
-      :value="undefined"
+      :value="null"
     >-</option>
     <option v-for="option in props.formPlan.props.values" :value="option">
       {{ typeof option == "string" ? convertName(option) : option }}

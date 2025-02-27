@@ -1,87 +1,120 @@
-import { computed, createVNode, defineComponent, inject, provide, reactive, watch, type PropType } from "vue";
-import type { FormGenChildContext, FormFieldTranslator, FormValidationErrors, ValidationErrorTranslator, FormGenConfig } from "./types";
-import FormGenChild from "./FormGenChild";
-import { setAtPathByFormPlan } from "./util/pathUtil";
-import { deepAssign, deepClone } from "./util/valueUtil";
-import { jsonSchemaToFormPlan, translateFormPlan } from "./util/jsonSchemaToFormPlan";
-import { validateFormValue } from "./util/validateFormValue";
-import { formGenConfigSymbol } from "./util/symbols";
+import {
+  computed,
+  createVNode,
+  defineComponent,
+  inject,
+  provide,
+  reactive,
+  watch,
+} from 'vue'
+import type {
+  FormGenChildContext,
+  FormValidationErrors,
+  FormGenConfig,
+} from './types'
+import FormGenChild from './FormGenChild'
+import { setAtPathByFormPlan } from './util/pathUtil'
+import { correctBaseShape, deepAssign, deepClone } from './util/valueUtil'
+import { jsonSchemaToFormPlan } from './util/jsonSchemaToFormPlan'
+import { validateFormValue } from './util/validateFormValue'
+import { formGenConfigSymbol, formGenContextSymbol } from './util/symbols'
 
 const component = defineComponent({
+  expose: undefined as unknown as ['validate'],
+  methods: undefined as unknown as { validate: () => boolean },
   props: {
-    schema: { type: [Object,String], required: true },
-    modelValue: Object,
-    errorTranslator: Function as PropType<ValidationErrorTranslator>,
-    fieldTranslator: Function as PropType<FormFieldTranslator>
+    schema: { type: [Object, String], required: true },
+    modelValue: Object
   },
   emit: {
-    "update:modelValue": (value: object) => {
-      return typeof value == "object";
+    'update:modelValue': (value: object) => {
+      return typeof value == 'object'
     },
   },
   setup(props, ctx) {
-    const formGenConfig =
-      inject<FormGenConfig>(formGenConfigSymbol);
-      if(!formGenConfig){
-        throw Error("Missing form gen configuration.")
-      }
+    const formGenConfig = inject<FormGenConfig>(formGenConfigSymbol)!
+
+    if (!formGenConfig) {
+      throw Error('Missing form gen configuration.')
+    }
+
     const schemaObject = computed(() => {
-      if (typeof props.schema === "string") {
-        try{
-          return JSON.parse(props.schema);
-        }catch(e){
-          return {};
+      if (typeof props.schema === 'string') {
+        try {
+          return JSON.parse(props.schema)
+        } catch (e) {
+          return {}
         }
       } else {
-        return props.schema;
+        return props.schema
       }
-    });
-    const formValue = reactive(deepClone(props.modelValue ?? {}));
-    const errors = reactive<FormValidationErrors>({});
-    const plan = computed(() => {
-      let plan = jsonSchemaToFormPlan(schemaObject.value)
-      if((props.fieldTranslator||formGenConfig.fieldTranslator)&&plan){
-        plan = translateFormPlan(plan, (props.fieldTranslator??formGenConfig.fieldTranslator)!)
-      }
-      return plan;
-    });
+    })
+    const plan = computed(() => jsonSchemaToFormPlan(schemaObject.value))
+    const formValue = reactive(
+      plan.value
+        ? correctBaseShape(props.modelValue, plan.value)
+        : {},
+    )
+    const errors = reactive<FormValidationErrors>({})
 
     function validate(): boolean {
-      const res = validateFormValue(formValue, schemaObject.value, props.errorTranslator??formGenConfig?.errorTranslator);
-      deepAssign(errors, res.errors);
-      return res.valid;
+      const res = validateFormValue(
+        formValue,
+        schemaObject.value,
+        formGenConfig.errorTranslator,
+      )
+      console.log('validation errors', res.errors)
+      deepAssign(errors, res.errors)
+      return res.valid
     }
-    
+
     function setValue(val: any, path: string[]) {
-      if(plan.value){
-        setAtPathByFormPlan(formValue, plan.value, path, val);
+      if (plan.value) {
+        setAtPathByFormPlan(formValue, plan.value, path, val)
       }
-        delete errors[path.join(".")];
+      for(const key in errors){
+        if(key.startsWith(path.join('.'))){
+          delete errors[key]
+        }
+      }
     }
 
     ctx.expose({
       validate,
-    });
+    })
 
     watch(formValue, (value) => {
-      ctx.emit("update:modelValue", deepClone(value));
-    });
+      ctx.emit('update:modelValue', deepClone(value))
+    })
 
     watch(
       () => props.modelValue,
       (value) => {
-        deepAssign(formValue, value??{});
+        if (plan.value) {
+          deepAssign(formValue, correctBaseShape(value, plan.value))
+        }
+        else{
+          deepAssign(formValue, {})
+        }
       },
-      { deep: true }
-    );
+      { deep: true },
+    )
 
-    provide<FormGenChildContext>("formGenChildContext", {
+    watch(plan, (value) => {
+      if (value) {
+        deepAssign(formValue, correctBaseShape(props.modelValue, value))
+      }
+    }, { deep: true })
+
+    provide<FormGenChildContext>(formGenContextSymbol, {
       errors: errors,
       value: formValue,
-      setValue
-    });
-    return () => plan?.value?.section === "object"?createVNode(FormGenChild, { formPlan: plan.value }):null;
-  },
-});
+      setValue,
+    })
 
-export default component;
+    return () =>
+      plan?.value?.section === 'object' ? createVNode(FormGenChild, { formPlan: plan.value }) : null
+  },
+})
+
+export default component

@@ -8,12 +8,22 @@ export function validateFormValue(
   errorTranslator?: ValidationErrorTranslator
 ): { errors: FormValidationErrors; valid: boolean } {
   const res = validate(value, formPlan);
+  console.log("res", res.errors);
   const errorsTransformed = res.errors.map((e) => {
-    return {
-      ...e,
-      message: e.name == "required" ? `value is required` : e.message,
-      path: e.name == "required" ? e.path.concat(e.argument) : e.path,
-    };
+    if(e.name === "required"){
+      return {
+        ...e,
+        message: `value is required`,
+        path: e.path.concat(e.argument),
+      };
+    }
+    if (e.name === "type" && e.instance == null) {
+      return {
+        ...e,
+        message: `value is required`,
+      };
+    }
+    return e;
   });
   if (errorTranslator) {
     errorsTransformed.forEach((e) => {

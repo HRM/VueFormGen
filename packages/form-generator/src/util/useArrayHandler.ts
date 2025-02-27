@@ -3,6 +3,7 @@ import type {
   FormGenComponentProps,
   FormPlan,
 } from "../types";
+import { generateBaseShape } from "./valueUtil";
 
 function replaceWildCardWithIndexInPlan<T extends FormPlan>(formPlan: T, index: number): T {
   const indexOfFirstWildcard = formPlan.path.findIndex((p) => p === "*");
@@ -60,7 +61,7 @@ export function useArrayHandler(
      * Add a new item to the array
      */
     expandArray() {
-      model.value = toRaw(model.value ?? []).concat([undefined]);
+      model.value = toRaw(model.value ?? []).concat([generateBaseShape(props.formPlan.items)]);
     },
     /**
      *

@@ -66,6 +66,9 @@ $border-radius: 4px;
   font-weight: bold;
   color: var(--form-gen-field-label-text-color);
 }
+.formGenComponent-field {
+  width: 100%;
+}
 
 .formGenComponent-field-boolean-label-row{
   display: flex;

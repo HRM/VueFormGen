@@ -9,9 +9,17 @@ import FormString from "./DefaultFormComponents/FormString.vue";
 import { componentCollection } from "./util/componentCollection";
 import "./defaultComponentCollectionStyles.scss";
 import type { FormPlan } from "./types";
+import FormFieldNoTitle from "./DefaultFormComponents/FormFieldNoTitle.vue";
 
 export const defaultComponentCollection = componentCollection([
   { selector: ["object"], component: FormObject },
+  {
+    selector: [
+      "field",
+      (plan: FormPlan<"field">) => !plan.props.title,
+    ],
+    component: FormFieldNoTitle,
+  },
   {
     selector: [
       "field",
