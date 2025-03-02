@@ -98,6 +98,17 @@ export function jsonSchemaToFormPlan(
             required,
           },
         } as FormPlan<"number">;
+      case "integer":
+        return {
+          section: "number",
+          path: basePath,
+          props: {
+            maximum: schema.maximum,
+            minimum: schema.minimum,
+            multipleOf: schema.multipleOf ?? 1,
+            required,
+          },
+        } as FormPlan<"number">;
       case "boolean":
         return {
           section: "boolean",

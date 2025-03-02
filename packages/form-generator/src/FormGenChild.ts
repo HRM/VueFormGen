@@ -3,7 +3,8 @@ import type { FormGenChildContext, FormGenComponent, FormGenConfig, FormPlan } f
 import { firstSelectorMatching } from './util/selectionUtil'
 import { getAtPath } from './util/pathUtil'
 import { formGenConfigSymbol, formGenContextSymbol } from './util/symbols'
-import { correctBaseShape } from './util/valueUtil'
+import { useFormGenConfig } from './util/use'
+import { cleanObject } from './util/valueUtil'
 
 export default defineComponent({
   props: {
@@ -12,7 +13,7 @@ export default defineComponent({
   setup(props) {
     const { value, errors, setValue } = inject<FormGenChildContext>(formGenContextSymbol)!
 
-    const formGenConfig = inject<FormGenConfig>(formGenConfigSymbol)!
+    const formGenConfig = useFormGenConfig();
 
     const SelectedComponent = computed(
       () =>
@@ -26,19 +27,21 @@ export default defineComponent({
 
     const plan = computed(() => {
       if (props.formPlan.section === 'field' && formGenConfig.fieldTranslator) {
-        return formGenConfig.fieldTranslator(props.formPlan)
+        const translation = formGenConfig.fieldTranslator(props.formPlan)
+        cleanObject(translation);
+        return { ...props.formPlan, props: { ...props.formPlan.props, ...translation } }
       }
       return props.formPlan
     })
 
     const valueSetter = computed(() => (val: any) => {
-      setValue(correctBaseShape(val, props.formPlan), props.formPlan.path)
+      setValue(val, props.formPlan.path)
     })
 
     return () =>
       SelectedComponent.value
         ? createVNode(SelectedComponent.value, {
-            modelValue: getAtPath(value, props.formPlan.path),
+            modelValue: getAtPath(value, props.formPlan.path) ?? null,
             formPlan: plan.value,
             errors: errors[props.formPlan.path.join('.')] ?? [],
             'onUpdate:modelValue': valueSetter.value,

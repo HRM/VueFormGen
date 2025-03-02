@@ -7,13 +7,25 @@ export function isNullish(value: any) {
   if (Array.isArray(value) && value.length === 0) {
     return true
   }
-  if(typeof value === "object" && value !== null && Object.getOwnPropertyNames(value).length === 0) {
-    return true;
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    Object.getOwnPropertyNames(value).length === 0
+  ) {
+    return true
   }
   if (value === undefined || value === null) {
     return true
   }
   return false
+}
+
+export function cleanObject(value: Record<string, any>) {
+  for (const key in value) {
+    if (isNullish(value[key])) {
+      delete value[key]
+    }
+  }
 }
 
 export function isObject(value: any) {
@@ -77,58 +89,72 @@ export function deepClone<T>(value: T): T {
   return value
 }
 
-export function generateBaseShape(plan: FormPlan): any {
+export function generateBaseShape(
+  plan: FormPlan,
+  config = { initializeBooleans: true, initializeObjects: true },
+): any {
   if (plan.section === 'field') {
-    return generateBaseShape(plan.child)
+    return generateBaseShape(plan.child, config)
   }
-  if (plan.section === 'object') {
+  if (plan.section === 'object' && config.initializeObjects) {
     let obj: Record<string, any> = {}
     for (let child of plan.children) {
       if (
         child.props.required ||
-        child.child.section === 'object' ||
-        child.child.section === 'boolean'
+        (child.child.section === 'object' && config.initializeObjects) ||
+        (child.child.section === 'boolean' && config.initializeBooleans)
       ) {
-        obj[child.path[child.path.length - 1]] = generateBaseShape(child)
+        obj[child.path[child.path.length - 1]] = generateBaseShape(child, config)
       }
     }
     return obj
   }
-  if (plan.section === 'boolean') {
+  if (plan.section === 'boolean' && config.initializeBooleans) {
     return false
   }
   return null
 }
 
-export function correctBaseShape(value: any, plan: FormPlan): any {
+export function correctBaseShape(
+  value: any,
+  plan: FormPlan,
+  config = { initializeBooleans: true, initializeObjects: true },
+): any {
   if (plan.section === 'field') {
-    return correctBaseShape(value, plan.child)
+    return correctBaseShape(value, plan.child, config)
   }
   if (plan.section === 'object') {
     if (!isObject(value)) {
-      return generateBaseShape(plan)
+      return generateBaseShape(plan, config)
     }
 
     let obj: Record<string, any> = {}
     for (let child of plan.children) {
       if (
         child.props.required ||
-        child.child.section === 'object' ||
-        child.child.section === 'boolean' ||
-        (child.path[child.path.length - 1] in value &&
-          !isNullish(value[child.path[child.path.length - 1]]))
+        (child.child.section === 'object' && config.initializeObjects) ||
+        (child.child.section === 'boolean' && config.initializeBooleans)
       ) {
         obj[child.path[child.path.length - 1]] = correctBaseShape(
           value[child.path[child.path.length - 1]],
           child,
+          config,
         )
+      } else if (child.path[child.path.length - 1] in value) {
+        const newValue = correctBaseShape(value[child.path[child.path.length - 1]], child, config)
+        if (!isNullish(newValue)) {
+          obj[child.path[child.path.length - 1]] = newValue
+        }
       }
     }
     return obj
   }
   if (plan.section === 'boolean') {
     if (typeof value !== 'boolean') {
-      return false
+      if (config.initializeBooleans) {
+        return false
+      }
+      return null
     }
     return value
   }
@@ -139,7 +165,7 @@ export function correctBaseShape(value: any, plan: FormPlan): any {
     if (!Array.isArray(value)) {
       return null
     }
-    return value.map((v, i) => correctBaseShape(v, plan.items))
+    return value.map((v, i) => correctBaseShape(v, plan.items, config))
   }
   if (plan.section === 'string') {
     if (typeof value !== 'string') {

@@ -11,10 +11,10 @@
 </template>
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue'
-import { FormGen, type FormGenRef } from 'vue-form-gen'
+import { FormGen} from 'vue-form-gen'
 import JsonEditor from '@/components/JsonEditor.vue'
 
-const formGen = useTemplateRef<FormGenRef>('form-gen')
+const formGen = useTemplateRef('form-gen')
 
 const props = defineProps<{
   defaultCode?: object | string

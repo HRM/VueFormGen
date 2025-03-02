@@ -7,6 +7,8 @@ export function createFormGenConfig(config: Partial<FormGenConfig> = {}): Plugin
   return (app) => {
     app.provide<FormGenConfig>(formGenConfigSymbol, {
       ...config,
+      initializeBooleans: config.initializeBooleans ?? true,
+      initializeObjects: config.initializeObjects ?? true,
       components: config.components ?? defaultComponentCollection,
     });
   };

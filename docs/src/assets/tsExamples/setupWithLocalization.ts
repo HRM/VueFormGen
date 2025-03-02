@@ -10,10 +10,15 @@ import App from '@/App.vue'
 
 const fieldTranslator: FormFieldTranslator = (formPlan) => {
   // ... here comes your field translation logic
+  return {
+    title: 'Translated title',
+    description: 'Translated description',
+  }
 }
 
 const errorTranslator: ValidationErrorTranslator = (error) => {
   // ... here comes your error translation logic
+  return 'Translated error message'
 }
 
 const app = createApp(App)

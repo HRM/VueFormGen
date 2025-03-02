@@ -9,9 +9,11 @@
   --background-color: #f0f0f0;
   --sheet-background-color: #f7f7f7;
   --text-color: #333333;
-  --text-highlight-color: #3a8bff;
+  --text-highlight-color: #006aff;
   --code-background-color: #282c34;
   --code-text-color: rgb(171, 178, 191);
+  --border-color: rgb(219, 219, 219);
+  --table-hover-color: #ffffff82;
 
   --font: 'Open Sans Variable', sans-serif;
   --font-code: 'Fira Code Variable', monospace;
@@ -19,7 +21,7 @@
   --font-size: 16px;
 
   --display-scroll-color: #b5b5b5;
-  --display-scroll-hover-color: #7a7979;
+  --display-scroll-hover-color: #f0f0f0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,6 +39,8 @@
     --text-highlight-color: #71acff;
     --code-background-color: #282c34;
     --code-text-color: rgb(171, 178, 191);
+    --border-color: rgb(59, 59, 59);
+    --table-hover-color: #272727;
 
     --font: 'Open Sans Variable', sans-serif;
     --font-code: 'Fira Code Variable', monospace;

@@ -11,7 +11,7 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(
-  createFormGenConfig(),
+  createFormGenConfig({initializeObjects: false}),
 )
 
 app.mount('#app')

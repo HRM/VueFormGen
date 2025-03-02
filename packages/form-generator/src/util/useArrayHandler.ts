@@ -1,47 +1,34 @@
-import { toRaw, type ModelRef, computed } from "vue";
-import type {
-  FormGenComponentProps,
-  FormPlan,
-} from "../types";
-import { generateBaseShape } from "./valueUtil";
+import { toRaw, type ModelRef, computed, inject } from 'vue'
+import type { FormGenComponentProps, FormGenConfig, FormPlan } from '../types'
+import { generateBaseShape } from './valueUtil'
+import { formGenConfigSymbol } from './symbols'
 
 function replaceWildCardWithIndexInPlan<T extends FormPlan>(formPlan: T, index: number): T {
-  const indexOfFirstWildcard = formPlan.path.findIndex((p) => p === "*");
-  if (indexOfFirstWildcard === -1)
-    throw new Error("FormPlan path must contain a wildcard '*'");
-  if (formPlan.section == "field") {
+  const indexOfFirstWildcard = formPlan.path.findIndex((p) => p === '*')
+  if (indexOfFirstWildcard === -1) throw new Error("FormPlan path must contain a wildcard '*'")
+  if (formPlan.section == 'field') {
     return {
       ...formPlan,
-      path: formPlan.path.map((p, i) =>
-        i === indexOfFirstWildcard ? index.toString() : p
-      ),
+      path: formPlan.path.map((p, i) => (i === indexOfFirstWildcard ? index.toString() : p)),
       child: replaceWildCardWithIndexInPlan(formPlan.child, index),
     }
-  }else if (formPlan.section == "array") {
+  } else if (formPlan.section == 'array') {
     return {
       ...formPlan,
-      path: formPlan.path.map((p, i) =>
-        i === indexOfFirstWildcard ? index.toString() : p
-      ),
+      path: formPlan.path.map((p, i) => (i === indexOfFirstWildcard ? index.toString() : p)),
       items: replaceWildCardWithIndexInPlan(formPlan.items, index),
-    };
-  } else if (formPlan.section == "object") {
+    }
+  } else if (formPlan.section == 'object') {
     return {
       ...formPlan,
-      path: formPlan.path.map((p, i) =>
-        i === indexOfFirstWildcard ? index.toString() : p
-      ),
-      children: formPlan.children.map((child) =>
-        replaceWildCardWithIndexInPlan(child, index)
-      ),
-    };
+      path: formPlan.path.map((p, i) => (i === indexOfFirstWildcard ? index.toString() : p)),
+      children: formPlan.children.map((child) => replaceWildCardWithIndexInPlan(child, index)),
+    }
   } else {
     return {
       ...formPlan,
-      path: formPlan.path.map((p, i) =>
-        i === indexOfFirstWildcard ? index.toString() : p
-      ),
-    };
+      path: formPlan.path.map((p, i) => (i === indexOfFirstWildcard ? index.toString() : p)),
+    }
   }
 }
 
@@ -52,31 +39,36 @@ function replaceWildCardWithIndexInPlan<T extends FormPlan>(formPlan: T, index: 
  * @returns
  */
 export function useArrayHandler(
-  model: ModelRef<any[]|undefined>,
-  props: FormGenComponentProps<"array">
+  model: ModelRef<any[] | null>,
+  props: FormGenComponentProps<'array'>,
 ) {
+  const formGenConfig = inject<FormGenConfig>(formGenConfigSymbol)!
 
   return {
     /**
      * Add a new item to the array
      */
     expandArray() {
-      model.value = toRaw(model.value ?? []).concat([generateBaseShape(props.formPlan.items)]);
+      model.value = toRaw(model.value ?? []).concat([
+        generateBaseShape(props.formPlan.items, formGenConfig),
+      ])
     },
     /**
      *
      * @param index the key or index of the item to remove
      */
     shrinkArray(index?: number) {
-      if(model.value === undefined) return;
+      if (model.value === null) return
       if (index === undefined) {
-        index = model.value.length - 1;
+        index = model.value.length - 1
       }
-      model.value = toRaw(model.value ?? []).filter((_, i) => i !== index);
+      model.value = toRaw(model.value ?? []).filter((_, i) => i !== index)
     },
     /**
      * Form plans used for rendering the FormGenChild components
      */
-    childPlans: computed(()=>(model.value??[]).map((_, i) => replaceWildCardWithIndexInPlan(props.formPlan.items, i))),
-  };
+    childPlans: computed(() =>
+      (model.value ?? []).map((_, i) => replaceWildCardWithIndexInPlan(props.formPlan.items, i)),
+    ),
+  }
 }

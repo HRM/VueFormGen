@@ -11,7 +11,7 @@
 import { FormGen } from 'vue-form-gen';
 import { ref, toRaw, useTemplateRef, watch} from 'vue';
 
-const obj = ref({test1: "test", test6:[{test1:"test",test2:0,test7:true}]});
+const obj = ref({});
 watch(obj,(value)=>{
     console.log(toRaw(value));
 })
@@ -21,18 +21,24 @@ const schema: any = {
         test1:{type:'string',minLength:5,description:"some description"},
         test2:{type:'number'},
         test3:{enum:["test1","test2"]},
+        b: {type: 'boolean'},
         test4:{type:'object', properties:{
             test1:{type:"string"},
             test2:{type:"number", maximum:0},
-            // test7:{type:'boolean'},
+            test7:{type:'boolean'},
+            test8: {type: 'object', properties: {
+                test1: {type: 'string'},
+                test2: {type: 'number', maximum: 0},
+                test7: {type: 'boolean'},
+            }},
         }},
-        test6:{type:'array', items:{type:'object', properties:{
+        test6:{type:'array', items:{type:'object', required:["test7"], properties:{
             test1:{type:"string"},
             test2:{type:"number", maximum:0},
             test7:{type:'boolean'},
         }}},
     },
-    required:['test1',"test6",'test4'],
+    required:['test1',"test6","test4"],
 };
 const formGenRef = useTemplateRef('form-gen');
 

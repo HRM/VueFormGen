@@ -10,7 +10,7 @@
   />
 </template>
 <script setup lang="ts">
-import { computed, inject, onUpdated, type InputTypeHTMLAttribute, type Ref } from "vue";
+import { computed, inject, type InputTypeHTMLAttribute, type Ref } from "vue";
 import type { FormGenComponentProps, FormGenComponentValue } from "../types";
 const model = defineModel<FormGenComponentValue<"string">>();
 const prop = defineProps<FormGenComponentProps<"string">>();

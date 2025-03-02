@@ -69,15 +69,15 @@ export type FormPlanSelector<K extends SectionType = SectionType> = {
 }[K];
 
 export type FormGenComponentValue<T extends SectionType = SectionType> =
-  Partial<{
-    object: object;
-    enum: string | number;
-    string: string;
-    number: number;
-    boolean: boolean;
+  {
+    object: object | null;
+    enum: string | number | null;
+    string: string | null;
+    number: number | null;
+    boolean: boolean | null;
     field: any;
-    array: any[];
-  }>[T];
+    array: any[] | null;
+  }[T];
 
 export type FormGenComponentProps<T extends SectionType = SectionType> = {
   formPlan: FormPlan<T>;
@@ -119,7 +119,7 @@ export type ComponentCollectionConfig<T extends SectionType[]> = {
 };
 
 export type ValidationErrorTranslator = (error: ValidationError) => string;
-export type FormFieldTranslator = (formPlan: FormPlan<"field">) => string;
+export type FormFieldTranslator = (formPlan: FormPlan<"field">) => {title?: string, description?: string};
 
 export type FormGenChildContext = {
   setValue: (val: any, path: string[]) => void;
@@ -129,6 +129,8 @@ export type FormGenChildContext = {
 
 export type FormGenConfig = {
   components: FormGenComponentEntry[];
+  initializeBooleans: boolean;
+  initializeObjects: boolean;
   fieldTranslator?: FormFieldTranslator;
   errorTranslator?: ValidationErrorTranslator;
 };

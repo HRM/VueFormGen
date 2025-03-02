@@ -7,6 +7,7 @@ import { jsonSchemaToFormPlan } from "./util/jsonSchemaToFormPlan";
 import { randomId } from "./util/randomId";
 import { useArrayHandler } from "./util/useArrayHandler";
 import { convertName } from "./util/convertName";
+import { useFormGenConfig } from "./util/use";
 export type * from "./types";
 
 export {
@@ -18,5 +19,6 @@ export {
   randomId,
   useArrayHandler,
   convertName,
-  defaultComponentCollection
+  defaultComponentCollection,
+  useFormGenConfig
 };
