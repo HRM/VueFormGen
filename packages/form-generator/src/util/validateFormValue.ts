@@ -8,7 +8,6 @@ export function validateFormValue(
   errorTranslator?: ValidationErrorTranslator
 ): { errors: FormValidationErrors; valid: boolean } {
   const res = validate(value, formPlan);
-  console.log("res", res.errors);
   const errorsTransformed = res.errors.map((e) => {
     if(e.name === "required"){
       return {

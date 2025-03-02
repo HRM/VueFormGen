@@ -42,7 +42,6 @@ const component = defineComponent({
 
     function validate(): boolean {
       const res = validateFormValue(formValue, schemaObject.value, formGenConfig.errorTranslator)
-      console.log('validation errors', res.errors)
       deepAssign(errors, res.errors)
       return res.valid
     }
