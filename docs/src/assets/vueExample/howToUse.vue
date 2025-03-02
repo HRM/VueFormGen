@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
-import { FormGen, type FormGenRef } from 'vue-form-gen';
+import { FormGen } from 'vue-form-gen';
 
 const schmema = {  
   "type": "object",
@@ -23,7 +23,7 @@ const schmema = {
 
 const value = ref({});
 
-const formGen = useTemplateRef<FormGenRef>('formGen');
+const formGen = useTemplateRef('formGen');
 
 </script>
 <template>
