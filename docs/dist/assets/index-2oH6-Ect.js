@@ -420,37 +420,37 @@ app.use(createFormGenConfig())
 
 app.mount('#app')
 `,jU=`<script setup lang="ts">
-import { ref, useTemplateRef } from 'vue';
-import { FormGen } from 'vue-form-gen';
+import { ref, useTemplateRef } from 'vue'
+import { FormGen } from 'vue-form-gen'
 
-const schmema = {  
-  "type": "object",
-  "properties": {
-    "name": { "type": "string" },
-    "age": { "type": "number" },
-    "items": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "itemName": { "type": "string" },
-          "itemPrice": { "type": "number" }
-        }
-      }
-    }
+const schmema = {
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    age: { type: 'number' },
+    items: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          itemName: { type: 'string' },
+          itemPrice: { type: 'number' },
+        },
+      },
+    },
   },
-  "required": ["name", "age"]
-};
+  required: ['name', 'age'],
+}
 
-const value = ref({});
+const value = ref({})
 
-const formGen = useTemplateRef('formGen');
-
+const formGen = useTemplateRef('formGen')
 <\/script>
 <template>
-    <FormGen :schema="schmema" v-model="value" ref="formGen" />
-    <button @click="formGen?.validate()">Validate</button>
-</template>`,PU=`type ObjectFormPlan = {
+  <FormGen :schema="schmema" v-model="value" ref="formGen" />
+  <button @click="formGen?.validate()">Validate</button>
+</template>
+`,PU=`type ObjectFormPlan = {
   section: 'object'
   path: string[]
   props: {
@@ -557,25 +557,22 @@ import type { FormGenComponentProps } from 'vue-form-gen'
 const props = defineProps<FormGenComponentProps<'object'>>()
 <\/script>
 `,BU=`<template>
-    <div>
-        <div v-for="(item,index) in childPlans" :key="index">
-            <FormGenChild :form-plan="item" />
-            <button @click="shrinkArray(index)">
-                -
-            </button>
-        </div>
-        <button @click="expandArray">
-            +
-        </button>
+  <div>
+    <div v-for="(item, index) in childPlans" :key="index">
+      <FormGenChild :form-plan="item" />
+      <button @click="shrinkArray(index)">-</button>
     </div>
+    <button @click="expandArray">+</button>
+  </div>
 </template>
 <script setup lang="ts">
-import {FormGenChild, useArrayHandler} from 'vue-form-gen';
-import type { FormGenComponentProps, FormGenComponentValue } from 'vue-form-gen';
-const props = defineProps<FormGenComponentProps<'array'>>();
-const model = defineModel<FormGenComponentValue<'array'>>({required:true});
-const {childPlans,expandArray,shrinkArray} = useArrayHandler(model, props);
-<\/script>`,RU=`import './assets/main.css'
+import { FormGenChild, useArrayHandler } from 'vue-form-gen'
+import type { FormGenComponentProps, FormGenComponentValue } from 'vue-form-gen'
+const props = defineProps<FormGenComponentProps<'array'>>()
+const model = defineModel<FormGenComponentValue<'array'>>({ required: true })
+const { childPlans, expandArray, shrinkArray } = useArrayHandler(model, props)
+<\/script>
+`,RU=`import './assets/main.css'
 import 'vue-form-gen/style.css'
 import { createApp } from 'vue'
 import { componentCollection, createFormGenConfig } from 'vue-form-gen'
@@ -586,43 +583,39 @@ import FormString from '@/components/FormString.vue'
  */
 
 const components = componentCollection([
-    { selector: ["object"], component: FormObject },
-    { selector: ["field"], component: FormField },
-    { selector: ["enum"], component: FormEnum },
-    { selector: ["boolean"], component: FormBoolean },
-    { selector: ["string"], component: FormString },
-    { selector: ["number"], component: FormNumber },
-    { selector: ["array"], component: FormArray },
+  { selector: ['object'], component: FormObject },
+  { selector: ['field'], component: FormField },
+  { selector: ['enum'], component: FormEnum },
+  { selector: ['boolean'], component: FormBoolean },
+  { selector: ['string'], component: FormString },
+  { selector: ['number'], component: FormNumber },
+  { selector: ['array'], component: FormArray },
 ])
 
 const app = createApp(App)
-app.use(createFormGenConfig({components}))
+app.use(createFormGenConfig({ components }))
 
 app.mount('#app')
-`,NU=`import { 
-    componentCollection, defaultComponentCollection 
-} from 'vue-form-gen'
+`,NU=`import { componentCollection, defaultComponentCollection } from 'vue-form-gen'
 import FormString from '@/components/FormString.vue'
 
-const components = componentCollection([
-    { selector: ["string"], component: FormString },
-]).concat(defaultComponentCollection);
+const components = componentCollection([{ selector: ['string'], component: FormString }]).concat(
+  defaultComponentCollection,
+)
 `,MU=`export const defaultComponentCollection = componentCollection([
-    { selector: ["object"], component: FormObject },
-    {
-      selector: [
-        "field",
-        (plan: FormPlan<"field">) => plan.child.section == "boolean",
-      ],
-      component: FormFieldBoolean,
-    },
-    { selector: ["field"], component: FormField },
-    { selector: ["enum"], component: FormEnum },
-    { selector: ["boolean"], component: FormBoolean },
-    { selector: ["string"], component: FormString },
-    { selector: ["number"], component: FormNumber },
-    { selector: ["array"], component: FormArray },
-  ]);`,LU=`import './assets/main.css'
+  { selector: ['object'], component: FormObject },
+  {
+    selector: ['field', (plan: FormPlan<'field'>) => plan.child.section == 'boolean'],
+    component: FormFieldBoolean,
+  },
+  { selector: ['field'], component: FormField },
+  { selector: ['enum'], component: FormEnum },
+  { selector: ['boolean'], component: FormBoolean },
+  { selector: ['string'], component: FormString },
+  { selector: ['number'], component: FormNumber },
+  { selector: ['array'], component: FormArray },
+])
+`,LU=`import './assets/main.css'
 import 'vue-form-gen/style.css'
 import { createApp } from 'vue'
 import {

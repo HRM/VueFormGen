@@ -9,16 +9,16 @@ import FormString from '@/components/FormString.vue'
  */
 
 const components = componentCollection([
-    { selector: ["object"], component: FormObject },
-    { selector: ["field"], component: FormField },
-    { selector: ["enum"], component: FormEnum },
-    { selector: ["boolean"], component: FormBoolean },
-    { selector: ["string"], component: FormString },
-    { selector: ["number"], component: FormNumber },
-    { selector: ["array"], component: FormArray },
+  { selector: ['object'], component: FormObject },
+  { selector: ['field'], component: FormField },
+  { selector: ['enum'], component: FormEnum },
+  { selector: ['boolean'], component: FormBoolean },
+  { selector: ['string'], component: FormString },
+  { selector: ['number'], component: FormNumber },
+  { selector: ['array'], component: FormArray },
 ])
 
 const app = createApp(App)
-app.use(createFormGenConfig({components}))
+app.use(createFormGenConfig({ components }))
 
 app.mount('#app')
